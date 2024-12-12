@@ -1,8 +1,13 @@
+/**
+ * @author Sagar Bhattacharya
+ * @description Form Data for Image Type Questions
+ */
+
 import React from 'react';
+import _ from 'lodash';
+
 import { QuestionType, ImageQuestion } from '../../typings/app';
 import { TextField, Typography } from '@mui/material';
-import _ from 'lodash';
-// import CloseIcon from '@mui/icons-material/Close';
 interface IProps {
     index: number;
     questionInfo: ImageQuestion;
@@ -10,6 +15,7 @@ interface IProps {
     setQuestions: React.Dispatch<React.SetStateAction<QuestionType[]>>;
 }
 
+// Currently Only using Image name as the Image Data
 export const ImageForm: React.FC<IProps> = ({
     questions,
     questionInfo,
@@ -18,38 +24,35 @@ export const ImageForm: React.FC<IProps> = ({
 }) => {
     const handleAddFileData = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newQuestions = [...questions];
-        _.set(newQuestions, `[${index}]['fileData']`, e.target.files);
+        _.set(
+            newQuestions,
+            `[${index}]['imageName']`,
+            e.target.files?.[0].name,
+        );
         setQuestions(newQuestions);
     };
-
-    // const clearFileData = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const newQuestions = [...questions];
-    //     _.omit(newQuestions, `[${index}]['fileData']`);
-    //     setQuestions(newQuestions);
-    //     console.log(newQuestions, questions);
-    // };
 
     const handleTextChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
         const { name, value } = event.target;
 
-        const newFields = [...questions];
-        _.set(newFields, `[${index}][${name}]`, value);
-        setQuestions(newFields);
+        const newQuestion = [...questions];
+        _.set(newQuestion, `[${index}][${name}]`, value);
+        setQuestions(newQuestion);
     };
 
     return (
-        <div className='flex-column'>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className='image-question-type flex-column'>
+            <div className='image-question-type--button flex-center-between '>
                 <Typography>Upload a Photo PNG, JPG, JPEG</Typography>
                 <div className='image-upload-container'>
                     <label htmlFor='file-upload' className='custom-file-upload'>
-                        {questionInfo.fileData ? (
+                        {questionInfo.imageName ? (
                             <span>
-                                {questionInfo.fileData[0].name.length > 20
-                                    ? `${questionInfo.fileData[0].name.slice(0, 20)}...`
-                                    : questionInfo.fileData[0].name}
+                                {questionInfo.imageName.length > 10
+                                    ? `${questionInfo.imageName.slice(0, 10)}...`
+                                    : questionInfo.imageName}
                             </span>
                         ) : (
                             'Upload'
@@ -72,11 +75,8 @@ export const ImageForm: React.FC<IProps> = ({
                 value={questionInfo.desc}
             />
             <Typography
-                style={{
-                    fontSize: '12px',
-                    color: '#b0b0b0',
-                    marginBottom: '4px',
-                }}
+                className='font-color-dark-gray'
+                style={subInfoTextStyle}
             >
                 This will be shown along with the photo before the question is
                 asked ti the candidate
@@ -92,3 +92,5 @@ export const ImageForm: React.FC<IProps> = ({
         </div>
     );
 };
+
+const subInfoTextStyle = { fontSize: '12px', marginTop: '8px' };

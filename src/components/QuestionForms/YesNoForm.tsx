@@ -1,24 +1,15 @@
-// import {
-//     Autocomplete,
-//     AutocompleteRenderInputParams,
-//     Checkbox,
-//     Chip,
-//     FormControl,
-//     Input,
-//     TextField,
-//     Typography,
-// } from '@mui/material';
+/**
+ * @author Sagar Bhattacharya
+ * @description Form Data for Yes/No Type Questions
+ */
+
 import React from 'react';
-import { QuestionType, YesNoQuestion } from '../../typings/app';
-import { IconButton, TextField, Typography } from '@mui/material';
-import { HunarButton } from '../utilities/HunarButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-
 import _ from 'lodash';
+import { IconButton, TextField, Typography } from '@mui/material';
 
-// import _ from 'lodash';
-// import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-// import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import { HunarButton } from '../utilities/HunarButton';
+import { QuestionType, YesNoQuestion } from '../../typings/app';
 
 interface IProps {
     index: number;
@@ -27,12 +18,9 @@ interface IProps {
     setQuestions: React.Dispatch<React.SetStateAction<QuestionType[]>>;
 }
 
-export const YesNoForm: React.FC<IProps> = ({
-    questionInfo,
-    questions,
-    index,
-    setQuestions,
-}) => {
+export const YesNoForm: React.FC<IProps> = (props) => {
+    const { questionInfo, questions, index, setQuestions } = props;
+
     const handleAddSubQuestion = () => {
         const newQuestions = [...questions];
         _.set(newQuestions, `[${index}]['subquestions']['present']`, true);
@@ -49,21 +37,18 @@ export const YesNoForm: React.FC<IProps> = ({
     const handleTextChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
-        const { value } = event.target;
+        const { name, value } = event.target;
 
-        const newFields = [...questions];
-        _.set(newFields, `[${index}]['subquestions']['question']`, value);
-        setQuestions(newFields);
+        const newQuestions = [...questions];
+        _.set(newQuestions, `[${index}]['subquestions'][${name}`, value);
+        setQuestions(newQuestions);
     };
 
     return (
         <div className='flex-column'>
             <Typography
-                style={{
-                    fontSize: '12px',
-                    color: '#b0b0b0',
-                    marginBottom: '4px',
-                }}
+                className='font-color-dark-gray'
+                style={subInfoTextStyle}
             >
                 'YES' the qualifying answer in this type of question and it is
                 always acompained by a sub question.
@@ -71,22 +56,16 @@ export const YesNoForm: React.FC<IProps> = ({
             <div>
                 {questionInfo.subquestions.present ? (
                     <>
-                        <div
-                            style={{
-                                padding: '4px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                            }}
-                        >
+                        <div className='flex-center-between'>
                             <Typography>Sub Question</Typography>
                             <IconButton onClick={removeSubQuestion}>
                                 <DeleteIcon />
                             </IconButton>
                         </div>
                         <TextField
-                            id='outlined-required'
+                            className='w-100'
                             required
+                            name='question'
                             onChange={handleTextChange}
                             label='Add your Sub Question here'
                             value={questionInfo.subquestions.question}
@@ -104,3 +83,5 @@ export const YesNoForm: React.FC<IProps> = ({
         </div>
     );
 };
+
+const subInfoTextStyle = { fontSize: '12px', marginTop: '8px' };

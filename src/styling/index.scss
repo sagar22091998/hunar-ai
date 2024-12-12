@@ -1,26 +1,24 @@
 $primary-color: #1976d2;
+$primary-color-light: #73b7fc;
 $white-color: #ffffff;
 $black-color: #000000;
 $grey-color: #b0b0b0;
-
-:root {
+$dark-grey-color: #555555;
+$sidebar-color: #dddddd;
+* {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
-    color-scheme: light dark;
-    color: black;
-    // color: rgba(255, 255, 255, 0.87);
-    // background-color: #242424;
 
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+.flex-center-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .hunar {
@@ -29,71 +27,77 @@ $grey-color: #b0b0b0;
     flex-direction: row;
 
     &--sidebar {
-        height: 100%;
+        position: sticky;
         width: 300px;
-        border: 2px solid green;
-        background: grey;
+        background: $sidebar-color;
+
+        & a {
+            display: flex;
+            border: 1px solid $primary-color;
+            margin: 20px 8px;
+            padding: 4px 8px;
+            border-radius: 5px;
+            color: $black-color;
+            text-decoration: none;
+            & svg {
+                margin-right: 10px;
+            }
+        }
+
+        & .active {
+            background-color: $primary-color-light;
+        }
     }
 
     &--content {
-        padding: 10px;
         background: $white-color;
         height: 100%;
         width: 100%;
-        border: 2px solid blue;
-
-        &--cotainer {
-            border: 1px $grey-color solid;
-            border-radius: 2px;
-            padding: 10px;
-
-            & h6 {
-                text-transform: uppercase;
-                font-size: 20px;
-                margin: 10px 4px;
-            }
-        }
     }
+}
+
+.add-job {
+    height: 100%;
+
+    &--header {
+        padding: 8px 20px;
+        height: 50px;
+        border-bottom: 1px dotted $grey-color;
+    }
+
+    &--content {
+        height: calc(100% - 110px);
+        padding: 16px;
+        overflow-y: scroll;
+    }
+
+    &--footer {
+        display: flex;
+        justify-content: end;
+        z-index: 2;
+        height: 60px;
+        border-top: 1px dotted $grey-color;
+    }
+}
+
+.mcq-question-type {
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .flex-column {
     display: flex;
     flex-direction: column;
-    gap: 10px;
 }
 
-.btn-primary {
-    color: #ffffff;
-    background: $primary-color;
-    padding: 8px 20px;
-    margin: 8px 2px;
-    font-size: 16px;
-    border: none;
-    border-radius: 2;
-    text-transform: uppercase;
-    transition: 0.3s;
-    cursor: pointer;
+.w-100 {
+    width: 100%;
 }
 
-.btn-primary:hover {
-    filter: brightness(125%);
-}
-
-.btn-secondary {
-    color: $primary-color;
-    background: $white-color;
-    padding: 8px 20px;
-    margin: 8px 2px;
-    font-size: 16px;
-    border: 1px solid $primary-color;
-    border-radius: 4px;
-    text-transform: uppercase;
-    transition: 0.3s;
-    cursor: pointer;
-}
-
-.btn-secondary:hover {
-    filter: brightness(95%);
+.font-color-dark-gray {
+    color: $dark-grey-color;
 }
 
 .multiselect-label {
@@ -101,13 +105,12 @@ $grey-color: #b0b0b0;
     font-size: 12px;
     top: -10px;
     left: 8px;
-    background: #ffffff;
+    background: $white-color;
 }
 
-.delete-icon {
-    &:hover span {
-        color: #000;
-        background: red;
+.image-question-type {
+    &--button {
+        margin: 12px 0;
     }
 }
 
@@ -128,7 +131,66 @@ $grey-color: #b0b0b0;
         display: flex;
         flex-direction: row;
     }
-    // & > div > span {
-    //     background: red;
-    // }
+}
+.all-jobs-page {
+    &--header {
+        padding: 8px 20px;
+        height: 50px;
+        border-bottom: 1px dotted $grey-color;
+    }
+
+    &--content {
+        padding: 8px;
+    }
+}
+.job-query {
+    & h3 {
+        font-weight: bold;
+        color: $primary-color;
+    }
+    padding: 20px;
+    border: 2px solid;
+}
+.question-display {
+    border-bottom: 1px dotted black;
+    &--question {
+        font-weight: bolder;
+    }
+
+    & p {
+        margin-left: 16px;
+    }
+}
+
+// Responsive Css
+
+@media screen and (max-width: 1023px) {
+    .hunar {
+        flex-direction: column;
+
+        &--sidebar {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            width: 100%;
+            z-index: 2;
+
+            & a {
+                margin: 8px;
+                padding: 4px;
+            }
+        }
+    }
+
+    .add-job {
+        margin-top: 50px;
+        height: calc(100% - 50px);
+        &--header {
+            width: 100%;
+            background: $white-color;
+            z-index: 2;
+        }
+    }
 }

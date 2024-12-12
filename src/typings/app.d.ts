@@ -1,31 +1,35 @@
-interface BaseQuestion {
-    type: 'MCQQuestion' | 'TextQuestion' | 'YesNoQuestion' | 'ImageQuestion';
-    question: string;
-}
+/**
+ * @author Sagar Bhattacharya
+ * @description App Types
+ */
 
-interface MCQQuestion extends BaseQuestion {
+type MCQQuestion = {
     type: 'MCQQuestion';
+    question: string;
     options: string[];
     answers: string[];
-}
+};
 
-interface TextQuestion extends BaseQuestion {
+type TextQuestion = {
     type: 'TextQuestion';
-}
+    question: string;
+};
 
-interface YesNoQuestion extends BaseQuestion {
+type YesNoQuestion = {
     type: 'YesNoQuestion';
+    question: string;
     subquestions: {
         present: boolean;
         question: string;
     };
-}
+};
 
-interface ImageQuestion extends BaseQuestion {
+type ImageQuestion = {
     type: 'ImageQuestion';
+    question: string;
     desc: string;
-    fileData?: FileList;
-}
+    imageName: string;
+};
 
 export type QuestionType =
     | MCQQuestion

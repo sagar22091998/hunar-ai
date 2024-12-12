@@ -1,3 +1,12 @@
+/**
+ * @author Sagar Bhattacharya
+ * @description Form Data for MCQ Type Questions
+ */
+
+import React from 'react';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import _ from 'lodash';
 import {
     Autocomplete,
     AutocompleteRenderInputParams,
@@ -8,11 +17,8 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import React from 'react';
+
 import { MCQQuestion, QuestionType } from '../../typings/app';
-import _ from 'lodash';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 interface IProps {
     index: number;
@@ -21,140 +27,124 @@ interface IProps {
     setQuestions: React.Dispatch<React.SetStateAction<QuestionType[]>>;
 }
 
-const icon = <CheckBoxOutlineBlankIcon fontSize='small' />;
-const checkedIcon = <CheckBoxIcon fontSize='small' />;
+export const MultipleChoiceForm: React.FC<IProps> = (props) => {
+    const { questionInfo, questions, index, setQuestions } = props;
 
-export const MultipleChoiceForm: React.FC<IProps> = ({
-    index,
-    questionInfo,
-    questions,
-    setQuestions,
-}) => {
+    // To filter from Answers if Option is removed
     const fieldCheck = (param: AutocompleteRenderInputParams) => {
         const newParam = param;
         if (_.isArray(newParam.InputProps.startAdornment)) {
-            newParam.InputProps.startAdornment =
-                newParam.InputProps.startAdornment.filter((item) => {
-                    return questionInfo.options.includes(item.props.label);
-                });
+            newParam.InputProps.startAdornment = _.filter(
+                newParam.InputProps.startAdornment,
+                (item) => _.includes(questionInfo.options, item.props.label),
+            );
         }
 
         return newParam;
     };
 
     const handleChangeAnswer = (answers: string[], index: number) => {
-        const newFields = [...questions];
-        _.set(newFields, `[${index}]['answers']`, answers);
-        setQuestions(newFields);
+        const newQuestion = [...questions];
+        _.set(newQuestion, `[${index}]['answers']`, answers);
+        setQuestions(newQuestion);
     };
 
     const handleAddOptions = (
         event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
         index: number,
     ) => {
-        const newItem = (event.target as HTMLInputElement).value;
+        const newItem = (event.target as HTMLInputElement).value.trim();
 
-        if (newItem && (event.code === 'Enter' || event.code === 'Space')) {
+        if (newItem && event.code === 'Enter') {
             const newItem = (event.target as HTMLInputElement).value;
-            const newFields = [...questions];
+            const newQuestion = [...questions];
             const currentOptions = _.get(
-                newFields,
+                newQuestion,
                 `[${index}]['options']`,
                 [] as string[],
             );
 
-            if (currentOptions.indexOf(newItem) !== -1) {
-                (event.target as HTMLInputElement).value = '';
-                return;
+            if (!_.includes(currentOptions, newItem)) {
+                currentOptions.push(newItem);
+                _.set(newQuestion, `[${index}]['options']`, currentOptions);
+                setQuestions(newQuestion);
             }
 
-            currentOptions.push(newItem);
-            _.set(newFields, `[${index}]['options']`, currentOptions);
-            setQuestions(newFields);
             (event.target as HTMLInputElement).value = '';
         }
     };
 
-    const handleDelete = (item: string, index: number) => {
-        const newFields = [...questions];
+    // Handler Only for Mobile Devices
+    const handleAddOptionsMobile = (value: string, index: number) => {
+        const newItem = value.trim();
+        const newQuestion = [...questions];
         const currentOptions = _.get(
-            newFields,
+            newQuestion,
             `[${index}]['options']`,
             [] as string[],
         );
 
-        const currentAnswers = _.get(
-            newFields,
-            `[${index}]['answers']`,
-            [] as string[],
-        );
+        if (!_.includes(currentOptions, newItem)) {
+            currentOptions.push(newItem);
+            _.set(newQuestion, `[${index}]['options']`, currentOptions);
+            setQuestions(newQuestion);
+        }
+    };
 
-        const newAnswers = currentAnswers.filter((x) => x !== item);
-        const newOptions = currentOptions.filter((x) => x !== item);
+    const handleDelete = (item: string, index: number) => {
+        const newQuestion = [...questions];
+        const currentOptions = _.get(newQuestion, `[${index}]['options']`, []);
+        const currentAnswers = _.get(newQuestion, `[${index}]['answers']`, []);
 
-        _.set(newFields, `[${index}]['answers']`, newAnswers);
-        _.set(newFields, `[${index}]['options']`, newOptions);
-        setQuestions(newFields);
+        const newOptions = _.filter(currentOptions, (x) => x !== item);
+        const newAnswers = _.filter(currentAnswers, (x) => x !== item);
+
+        _.set(newQuestion, `[${index}]['options']`, newOptions);
+        _.set(newQuestion, `[${index}]['answers']`, newAnswers);
+        setQuestions(newQuestion);
     };
 
     return (
-        <div className='flex-column'>
-            <FormControl
-                sx={{
-                    position: 'relative',
-                    display: 'flex',
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    width: '100%',
-                    border: '1px solid #b0b0b0',
-                    borderRadius: '4px',
-                    padding: '12px 8px',
-                }}
-            >
+        <div className='mcq-question-type'>
+            <FormControl sx={customMultiTextFieldWrapperStyle}>
                 {questionInfo.options.length > 0 && (
                     <div className='multiselect-label'>
                         Type Options (Minimun 2)
                     </div>
                 )}
-                <div className={'container'}>
-                    {questionInfo.options.map((item) => (
+                <>
+                    {_.map(questionInfo.options, (item, chipIndex) => (
                         <Chip
-                            style={{
-                                padding: '8px 4px',
-                                margin: '5px',
-                                fontSize: '16px',
-                            }}
+                            key={chipIndex}
+                            style={chipStyle}
                             size='small'
                             onDelete={() => handleDelete(item, index)}
                             label={item}
                         />
                     ))}
-                </div>
+                </>
                 <Input
-                    sx={{
-                        margin: '0 10px',
-                        width: '300px',
-                    }}
+                    sx={customMultiTextFieldStyle}
                     placeholder='Type Options (Minimun 2)'
                     onBlur={(e) => {
+                        // In case of Mobile/Tab Device being used 'onKeyDown' never triggers [Adding below logic to add Options if using application on Mobile]
+                        if (/Mobi|Android/i.test(navigator.userAgent)) {
+                            handleAddOptionsMobile(e.target.value, index);
+                        }
+
                         e.target.value = '';
                     }}
                     onKeyDown={(e) => handleAddOptions(e, index)}
                 />
             </FormControl>
             <Typography
-                style={{
-                    fontSize: '12px',
-                    color: '#b0b0b0',
-                    marginBottom: '4px',
-                }}
+                className='font-color-dark-gray'
+                style={subInfoTextStyle}
             >
-                Type and press 'Enter' / 'Space' to create multiple Option
+                Type and press 'Enter' to create multiple Options
             </Typography>
             <Autocomplete
                 multiple
-                id='tags-outlined'
                 options={questionInfo.options}
                 getOptionLabel={(option) => option}
                 onChange={(_, newValue) => {
@@ -165,8 +155,10 @@ export const MultipleChoiceForm: React.FC<IProps> = ({
                     return (
                         <li key={key} {...optionProps}>
                             <Checkbox
-                                icon={icon}
-                                checkedIcon={checkedIcon}
+                                icon={
+                                    <CheckBoxOutlineBlankIcon fontSize='small' />
+                                }
+                                checkedIcon={<CheckBoxIcon fontSize='small' />}
                                 style={{ marginRight: 8 }}
                                 checked={selected}
                             />
@@ -187,3 +179,28 @@ export const MultipleChoiceForm: React.FC<IProps> = ({
         </div>
     );
 };
+
+const customMultiTextFieldWrapperStyle = {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+    border: '1px solid #b0b0b0',
+    borderRadius: '4px',
+    padding: '12px 8px',
+};
+
+const customMultiTextFieldStyle = {
+    margin: '0 10px',
+    width: '300px',
+};
+
+const chipStyle = {
+    padding: '4px',
+    margin: '2px',
+    fontSize: '16px',
+};
+
+const subInfoTextStyle = { fontSize: '12px', margin: '4px 0px' };

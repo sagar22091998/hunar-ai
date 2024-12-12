@@ -1,3 +1,8 @@
+/**
+ * @author Sagar Bhattacharya
+ * @description Utility Button
+ */
+
 import React from 'react';
 import { Button } from '@mui/material';
 

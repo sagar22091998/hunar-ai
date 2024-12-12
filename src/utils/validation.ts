@@ -1,5 +1,15 @@
+/**
+ * @author Sagar Bhattacharya
+ * @description Questions Validations Utility
+ */
+
 import _ from 'lodash';
-import { MCQQuestion, QuestionType, YesNoQuestion } from '../typings/app';
+import {
+    ImageQuestion,
+    MCQQuestion,
+    QuestionType,
+    YesNoQuestion,
+} from '../typings/app';
 
 type ValidationResult = [boolean, string];
 
@@ -11,9 +21,9 @@ export const validateQuestions = (
 
     _.forEach(questions, (question, index) => {
         if (_.isEmpty(_.trim(question.question))) {
-            validationMessage = `Question ${index + 1} is missing the "question" field.`;
+            validationMessage = `Question field is empty for Question ${index + 1}.`;
             isValid = false;
-            return false; // Exit iteration
+            return false;
         }
 
         if (question.type === 'MCQQuestion') {
@@ -22,9 +32,15 @@ export const validateQuestions = (
                 _.isEmpty(mcqQuestion.options) ||
                 mcqQuestion.options.length < 2
             ) {
-                validationMessage = `Question ${index + 1} does not have more than one "option".`;
+                validationMessage = `Question ${index + 1} does not have two or more Options.`;
                 isValid = false;
-                return false; // Exit iteration
+                return false;
+            }
+
+            if (_.isEmpty(mcqQuestion.answers)) {
+                validationMessage = `Question ${index + 1} does not have any Answer(s).`;
+                isValid = false;
+                return false;
             }
         }
 
@@ -34,9 +50,24 @@ export const validateQuestions = (
                 yesNoQuestion.subquestions?.present &&
                 _.isEmpty(_.trim(yesNoQuestion.subquestions.question))
             ) {
-                validationMessage = `Question ${index + 1} has a Sub Question with an empty "question" field.`;
+                validationMessage = `Sub-Question field is empty for Question ${index + 1}.`;
                 isValid = false;
-                return false; // Exit iteration
+                return false;
+            }
+        }
+
+        if (question.type === 'ImageQuestion') {
+            const imageQuestion = question as ImageQuestion;
+            if (_.isEmpty(_.trim(imageQuestion.desc))) {
+                validationMessage = `Description field is empty for Question ${index + 1}.`;
+                isValid = false;
+                return false;
+            }
+
+            if (_.isEmpty(_.trim(imageQuestion.imageName))) {
+                validationMessage = `Please Select Image/File for Question ${index + 1}.`;
+                isValid = false;
+                return false;
             }
         }
     });
