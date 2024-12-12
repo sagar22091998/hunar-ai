@@ -15,24 +15,30 @@ Ensure you have the following installed on your system:
 
 ### Steps to Launch the App
 
-1. Install dependencies:
+1. Clone the repository and navigate to the correct directory:
+
+    ```bash
+    cd hunar-ai
+    ```
+
+2. Install dependencies:
 
     ```bash
     yarn install
     ```
 
-2. Start the development server:
+3. Start the development server:
 
     ```bash
     yarn run dev
     ```
 
-3. Open your browser and navigate to `http://localhost:8000` to view the
+4. Open your browser and navigate to `http://localhost:8000` to view the
    application.
 
 ## Utility Packages Used
 
-The following utility packages were used in this project:
+The following utility packages were used in this project: [Mobile Compatible]
 
 - **[Material UI](https://mui.com/)**: For modern and customizable UI
   components.
