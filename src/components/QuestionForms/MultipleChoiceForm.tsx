@@ -54,7 +54,6 @@ export const MultipleChoiceForm: React.FC<IProps> = (props) => {
         index: number,
     ) => {
         const newItem = (event.target as HTMLInputElement).value.trim();
-
         if (newItem && event.code === 'Enter') {
             const newItem = (event.target as HTMLInputElement).value;
             const newQuestion = [...questions];
@@ -74,8 +73,10 @@ export const MultipleChoiceForm: React.FC<IProps> = (props) => {
         }
     };
 
-    // Handler Only for Mobile Devices
+    // Handler called for Mobile Devices [See onBlur Note in Input Field]
     const handleAddOptionsMobile = (value: string, index: number) => {
+        if (value === '') return;
+
         const newItem = value.trim();
         const newQuestion = [...questions];
         const currentOptions = _.get(

@@ -7,6 +7,7 @@ import React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import _ from 'lodash';
 import { IconButton, TextField, Typography } from '@mui/material';
+import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
 
 import { HunarButton } from '../utilities/HunarButton';
 import { QuestionType, YesNoQuestion } from '../../typings/app';
@@ -57,7 +58,12 @@ export const YesNoForm: React.FC<IProps> = (props) => {
                 {questionInfo.subquestions.present ? (
                     <>
                         <div className='flex-center-between'>
-                            <Typography>Sub Question</Typography>
+                            <Typography>
+                                <SubdirectoryArrowRightIcon
+                                    style={subQuestionIconStyle}
+                                />
+                                Sub Question
+                            </Typography>
                             <IconButton onClick={removeSubQuestion}>
                                 <DeleteIcon />
                             </IconButton>
@@ -85,3 +91,4 @@ export const YesNoForm: React.FC<IProps> = (props) => {
 };
 
 const subInfoTextStyle = { fontSize: '12px', marginTop: '8px' };
+const subQuestionIconStyle = { fontSize: '16px' };

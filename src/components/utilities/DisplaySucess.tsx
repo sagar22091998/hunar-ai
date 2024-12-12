@@ -5,35 +5,35 @@ interface IProp {
     message: string;
 }
 
-export type DisplayErrorHandle = {
-    displayError: () => void;
+export type DisplaySuccessHandle = {
+    displaySuccess: () => void;
 };
 
-const DisplayError: React.ForwardRefRenderFunction<
-    DisplayErrorHandle,
+const DisplaySuccess: React.ForwardRefRenderFunction<
+    DisplaySuccessHandle,
     IProp
 > = (props, ref) => {
-    const [showError, setShowError] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     useImperativeHandle(ref, () => ({
-        displayError,
+        displaySuccess,
     }));
 
-    const displayError = () => {
-        setShowError(!showError);
+    const displaySuccess = () => {
+        setShowSuccess(!showSuccess);
     };
     return (
         <Snackbar
-            open={showError}
+            open={showSuccess}
             autoHideDuration={2000}
-            onClose={displayError}
+            onClose={displaySuccess}
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         >
-            <Alert variant='filled' severity='error'>
+            <Alert variant='filled' severity='success'>
                 {props.message}
             </Alert>
         </Snackbar>
     );
 };
 
-export default forwardRef(DisplayError);
+export default forwardRef(DisplaySuccess);

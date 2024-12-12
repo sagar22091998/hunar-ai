@@ -17,6 +17,9 @@ import {
 } from '@mui/material';
 
 import DisplayError, { DisplayErrorHandle } from './utilities/DisplayError';
+import DisplaySuccess, {
+    DisplaySuccessHandle,
+} from './utilities/DisplaySucess';
 import { HunarButton } from './utilities/HunarButton';
 import { QuestionFormData } from './QuestionForms/QuestionFormData';
 import { QuestionType } from '../typings/app';
@@ -37,6 +40,7 @@ const AddJobQuery: React.FC<IProps> = ({ setAllJobQueries }) => {
     const [errorText, setErrorText] = useState('');
 
     const displayErrorRef = useRef<DisplayErrorHandle>(null);
+    const displaySuccessRef = useRef<DisplaySuccessHandle>(null);
 
     const handleAddQuestion = () => {
         const allValid = validateQuestions(questions);
@@ -58,6 +62,7 @@ const AddJobQuery: React.FC<IProps> = ({ setAllJobQueries }) => {
 
             // Reset
             setQuestions([_.cloneDeep(INITIAL_QUESTION_DATA['MCQQuestion'])]);
+            displaySuccessRef.current?.displaySuccess();
         } else {
             displayErrorRef.current?.displayError();
             setErrorText(allValid[1]);
@@ -161,6 +166,10 @@ const AddJobQuery: React.FC<IProps> = ({ setAllJobQueries }) => {
                     })}
                 </FormControl>
                 <DisplayError ref={displayErrorRef} message={errorText} />
+                <DisplaySuccess
+                    ref={displaySuccessRef}
+                    message='Success! Check Jobs Page'
+                />
                 <HunarButton
                     buttonText='Add Question'
                     handleFunction={handleAddQuestion}
